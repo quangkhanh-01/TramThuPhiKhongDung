@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link th:href="@{/css/signup.css}" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+    <section class="vh-100 bg-image" style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
+                <h2 class="text-uppercase text-center mb-5">Đăng ký</h2>
+                <div>
+					<div th:if="${success!=null}" th:text="${success}" class="alert alert-success"></div>
+  					<div th:if="${faild!=null}" th:text="${faild}" class="alert alert-danger"></div>  
+				</div>
+				
+                <form>  
+                  <div class="form-outline mb-4">
+                    <input type="text" id="ten" class="form-control form-control-lg" placeholder="Họ và tên" />
+                  </div>
+                  <div class="form-outline mb-4">
+					  <label>Giới tính:</label>
+					  <input type="radio" id="nam" value="Nam">
+					  <label>Nam</label>
+					  <input type="radio" id="nu" value="Nữ">
+					  <label>Nữ</label><br>               
+                  </div>  
+                  <div class="form-outline mb-4">
+                    <input type="email" id="email" class="form-control form-control-lg" placeholder="email"/>
+                  </div>
+  
+                  <div class="form-outline mb-4">
+                    <input type="password" id="password" class="form-control form-control-lg" placeholder="Mật khẩu"/>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input type="password" id="confirmPassword" class="form-control form-control-lg" placeholder="Xác nhận mật khẩu"/>
+                  </div>
+                  <div class="form-outline mb-4">
+					 <label>Ngày sinh:</label>
+                    <input type="date"id="ngaysinh" class="form-control form-control-lg"  placeholder="Ngày sinh"/>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input type="text" id="diachi" class="form-control form-control-lg" placeholder="Địa chỉ" />
+                  </div>  
+                  <div class="form-outline mb-4">
+                    <input type="text" id="sodienthoai" class="form-control form-control-lg" placeholder="Số điện thoại" />
+                  </div> 
+                  <div class="form-outline mb-4">
+                    <input type="text" id="bienso" class="form-control form-control-lg" placeholder="Biển số xe" />
+                  </div>   
+                  <div class="form-outline mb-4">
+					 <div>
+						 <label>Màu biển:</label>
+					 </div>
+                    <select id="maubien" class="form-select">
+					  <option value="Màu trắng">Màu trắng</option>
+					  <option value="Màu đỏ">Màu đỏ</option>
+					  <option value="Màu vàng">Màu vàng</option>
+					  <option value="Màu xanh">Màu xanh</option>
+					</select>
+                  </div>  
+                  <div class="d-flex justify-content-center">
+                    <button type="button" id="btnRegister" class="btn btn-success btn-block btn-lg gradient-custom-4 form-control text-body">Đăng ký</button>
+                  </div>
+  
+                  <p class="text-center text-muted">Đăng nhập tại đây <a th:href="@{/dangnhap}"
+                      class="fw-bold text-body"><u>Đăng nhập</u></a></p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>    
+  <script>
+	  const btlLogin = document.getElementById('btnRegister');
+	  const url = "/api/register";
+	  btlLogin.addEventListener("click", register);
+	  function register(){
+		  let email = document.getElementById("email").value;
+		  let password = document.getElementById("password").value;
+		  let confirmPassword = document.getElementById('confirmPassword').value;
+		  let ten = document.getElementById('ten').value;
+		  let gioitinh;
+		  let nam = document.getElementById('nam');
+		  let nu = document.getElementById('nu');
+		  if(nam.checked){
+			  gioitinh = nam.value;
+		  }else if(nu.checked){
+			  gioitinh = nu.value;
+		  }
+		  let ngaysinh = document.getElementById("ngaysinh").value;
+		  let quequan = document.getElementById("diachi").value;
+		  let sodienthoai = document.getElementById('sodienthoai').value;
+		  let bienso = document.getElementById('bienso').value;
+		  let maubien = document.getElementById('maubien').value;
+		  if(!validateEmail(email)){
+			  alert('Định dạng email không đúng');
+		  }else if(password!=confirmPassword){
+			  alert('Xác nhận mật khẩu không đúng');
+		  }else{
+	  		  let user = {email:email, password:password, ten:ten, gioitinh:gioitinh, ngaysinh:ngaysinh, quequan:quequan, sodienthoai:sodienthoai, bienso:bienso, maubien:maubien}
+			  fetch(url,{
+				  method: "POST",
+				  body: JSON.stringify(user),
+				  headers: {
+					  "Accept": "application/json",
+					  "Content-type": "application/json; charset=UTF-8"
+				  }
+			  })
+			  .then(response => {
+				  if(response.ok){
+					  alert('Đăng ký thành công');
+					  window.location.href = "/dangnhap"
+				  }else{
+					  alert('Đăng ký thất bại');
+				  }					
+			  })
+		  }
+	  }
+
+	  const validateEmail = (email) => {
+		  return String(email)
+		    .toLowerCase()
+		    .match(
+		      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		    );
+		};
+  </script>
+</body>
+</html>
